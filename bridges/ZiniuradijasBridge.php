@@ -9,6 +9,10 @@ class ZiniuradijasBridge extends BridgeAbstract {
 
         private $title;
 
+        public function getIcon() {
+                return 'https://www.ziniuradijas.lt/themes/ziniuradijas/images/logo_sticky.png';
+        }
+
         public function collectData() {
 
                 $url = $this->getURI();
@@ -17,17 +21,12 @@ class ZiniuradijasBridge extends BridgeAbstract {
                         or returnServerError('Could not request ' . $url);
                 $html = defaultLinkTo($html, $url);
 
-                foreach($html->find('.pagination-content .small-new') as $article) {
-                        $item = array();
-                        $link = $article->find('.title a', 0)->href;
-                        $linkHtml = getSimpleHTMLDOM($link)
-                                    or returnServerError('Error loading article ' . $link);
-                        $item['image'] = 'https://www.ziniuradijas.lt' . $article->find('.block-image img', 0)->getAttribute('data-src');
-                        $item['enclosures'] = array('https://www.ziniuradijas.lt' . $linkHtml->find('.download a', 0)->href);
-                        $text = '';
-                        foreach ($linkHtml->find('.episode p') as $block) {
-                            $text = $text . ' ' . $block->innertext;
+                foreach ($linkHtml->find('.episode p') as $block) {
+                            $text = $text . ' ' . $block->outertext;
                         }
+                        $timestamp = $this->lithuanianPubDateToTimestamp($article->find('.date', 0)->plaintext . ' ' . $linkHtml->find('.slider-date span', 1)->plaintext);
+                        echo $timestamp;
+                        $item['timestamp'] = $timestamp;
                         $item['content'] = $text;
                         $item['author'] = trim($linkHtml->find('.speaker span', 0)->plaintext);
                         $item['categories'] = array($article->find('.episode-name a', 0)->plaintext);
@@ -35,5 +34,27 @@ class ZiniuradijasBridge extends BridgeAbstract {
                         $item['uri'] = $link;
                         $this->items[] = $item;
                 }
+        }
+        private function lithuanianPubDateToTimestamp($parse) {
+                return DateTime::createFromFormat('Y M d H:i',
+                            strtr(
+                                strtolower(str_replace('m. ', '', strtolower(str_replace(' d.', '', $parse)))),
+                                array(
+                                        'sausio' => 'jan',
+                                        'vasario' => 'feb',
+                                        'kovo' => 'march',
+                                        'baland  io' => 'apr',
+                                        'gegu   ^ws' => 'may',
+                                        'bir  elio' => 'jun',
+                                        'liepos' => 'jul',
+                                        'rugpj   ^mio' => 'aug',
+                                        'rugs ^wjo' => 'sep',
+                                        'spalio' => 'oct',
+                                        'lapkri ^mio' => 'nov',
+                                        'gruod  io' => 'dec'
+                                )
+                            ),
+                            new DateTimeZone('Europe/Vilnius')
+                        )->getTimestamp();
         }
 }
