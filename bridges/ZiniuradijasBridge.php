@@ -17,17 +17,23 @@ class ZiniuradijasBridge extends BridgeAbstract {
 
                 $url = $this->getURI();
 
-                $html = getSimpleHTMLDOM($url)
+                $html = getSimpleHTMLDOMCached($url, 300) // 5 minutes
                         or returnServerError('Could not request ' . $url);
                 $html = defaultLinkTo($html, $url);
 
-                foreach ($linkHtml->find('.episode p') as $block) {
+                foreach($html->find('.pagination-content .small-new') as $article) {
+                        $item = array();
+                        $link = $article->find('.title a', 0)->href;
+                        $linkHtml = getSimpleHTMLDOMCached($link, 86400) // 1 day
+                                    or returnServerError('Error loading article ' . $link);
+                        $item['enclosures'] = array('https://www.ziniuradijas.lt' . $article->find('.block-image img', 0)->getAttribute('data-src'), 'https://www.ziniuradijas.lt' . $linkHtml->find('.download a', 0)->href);
+                        $text = '';
+                        foreach ($linkHtml->find('.episode p') as $block) {
                             $text = $text . ' ' . $block->outertext;
                         }
                         $timestamp = $this->lithuanianPubDateToTimestamp($article->find('.date', 0)->plaintext . ' ' . $linkHtml->find('.slider-date span', 1)->plaintext);
-                        echo $timestamp;
                         $item['timestamp'] = $timestamp;
-                        $item['content'] = $text;
+                        $item['content'] = str_replace('src="assets', 'src="https://www.ziniuradijas.lt/assets', $text);
                         $item['author'] = trim($linkHtml->find('.speaker span', 0)->plaintext);
                         $item['categories'] = array($article->find('.episode-name a', 0)->plaintext);
                         $item['title'] = $article->find('.title a h3', 0)->plaintext;
