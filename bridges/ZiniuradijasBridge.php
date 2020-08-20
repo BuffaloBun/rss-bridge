@@ -26,7 +26,16 @@ class ZiniuradijasBridge extends BridgeAbstract {
                         $link = $article->find('.title a', 0)->href;
                         $linkHtml = getSimpleHTMLDOMCached($link, 86400) // 1 day
                                     or returnServerError('Error loading article ' . $link);
-                        $item['enclosures'] = array('https://www.ziniuradijas.lt' . $article->find('.block-image img', 0)->getAttribute('data-src'), 'https://www.ziniuradijas.lt' . $linkHtml->find('.download a', 0)->href);
+                        $file = $linkHtml->find('.download a', 0);
+                        $img = 'https://www.ziniuradijas.lt' . $article->find('.block-image img', 0);
+                        $array = array();
+                        if (isset($file)) {
+                                array_push($array, $file->href);
+                        }
+                        if (isset($img)) {
+                                array_push($array, $img->getAttribute('data-src'));
+                        }
+                        $item['enclosures'] = $array;
                         $text = '';
                         foreach ($linkHtml->find('.episode p') as $block) {
                             $text = $text . ' ' . $block->outertext;
