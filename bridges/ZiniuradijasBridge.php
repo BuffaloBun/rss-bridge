@@ -30,7 +30,7 @@ class ZiniuradijasBridge extends BridgeAbstract {
                         $img = $article->find('.block-image img', 0);
                         $array = array();
                         if (isset($file)) {
-                                array_push($array, $file->href);
+                                array_push($array, 'https://www.ziniuradijas.lt' . $file->href);
                         }
                         if (isset($img)) {
                                 array_push($array, 'https://www.ziniuradijas.lt' . $img->getAttribute('data-src'));
