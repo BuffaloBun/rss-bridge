@@ -58,15 +58,15 @@ class ZiniuradijasBridge extends BridgeAbstract {
                                         'sausio' => 'jan',
                                         'vasario' => 'feb',
                                         'kovo' => 'march',
-                                        'baland  io' => 'apr',
-                                        'gegu   ^ws' => 'may',
-                                        'bir  elio' => 'jun',
+                                        'balandžio' => 'apr',
+                                        'gegužės' => 'may',
+                                        'birželio' => 'jun',
                                         'liepos' => 'jul',
-                                        'rugpj   ^mio' => 'aug',
-                                        'rugs ^wjo' => 'sep',
+                                        'rugpjūčio' => 'aug',
+                                        'rugsėjo' => 'sep',
                                         'spalio' => 'oct',
-                                        'lapkri ^mio' => 'nov',
-                                        'gruod  io' => 'dec'
+                                        'lapkričio' => 'nov',
+                                        'gruodžio' => 'dec'
                                 )
                             ),
                             new DateTimeZone('Europe/Vilnius')
