@@ -27,13 +27,13 @@ class ZiniuradijasBridge extends BridgeAbstract {
                         $linkHtml = getSimpleHTMLDOMCached($link, 86400) // 1 day
                                     or returnServerError('Error loading article ' . $link);
                         $file = $linkHtml->find('.download a', 0);
-                        $img = 'https://www.ziniuradijas.lt' . $article->find('.block-image img', 0);
+                        $img = $article->find('.block-image img', 0);
                         $array = array();
                         if (isset($file)) {
                                 array_push($array, $file->href);
                         }
                         if (isset($img)) {
-                                array_push($array, $img->getAttribute('data-src'));
+                                array_push($array, 'https://www.ziniuradijas.lt' . $img->getAttribute('data-src'));
                         }
                         $item['enclosures'] = $array;
                         $text = '';
