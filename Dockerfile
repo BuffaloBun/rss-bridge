@@ -17,4 +17,4 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
 	&& chmod +x / && chmod +x /home
 
 COPY ./ /home/container
-CMD ["./entrypoint.sh"]
+CMD ["/home/container/entrypoint.sh"]
