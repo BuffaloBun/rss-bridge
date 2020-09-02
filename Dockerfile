@@ -15,5 +15,6 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
 	&& sed -ri -e 's/(CipherString\s*=\s*DEFAULT)@SECLEVEL=2/\1/' /etc/ssl/openssl.cnf \
 	&& mkdir -p /home/container \
 	&& chmod +x / && chmod +x /home
-RUN usermod -G root www-data
+
 COPY ./ /home/container
+CMD ["./entrypoint.sh"]
