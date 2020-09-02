@@ -1,8 +1,6 @@
 FROM php:7-apache
 
 ENV APACHE_DOCUMENT_ROOT=/home/container
-ENV APACHE_RUN_USER=root
-ENV APACHE_RUN_GROUP=root
 
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
 	&& apt-get --yes update \
@@ -17,5 +15,5 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
 	&& sed -ri -e 's/(CipherString\s*=\s*DEFAULT)@SECLEVEL=2/\1/' /etc/ssl/openssl.cnf \
 	&& mkdir -p /home/container \
 	&& chmod +x / && chmod +x /home
-
+RUN usermod -G root www-data
 COPY ./ /home/container
